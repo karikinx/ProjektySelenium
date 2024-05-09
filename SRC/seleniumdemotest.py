@@ -9,7 +9,15 @@ import random
 WEBSITE_LINK = "http://seleniumdemo.com/?page_id=7"
 CORRECT_PASSWORD = "#1QAZwsx#1"
 WRONG_PASSWORD = "#1QAZwsx#111"
-CORRECT_LOGIN = ""
+CORRECT_LOGIN = "karikinx@gmail.com"
+BILLING_NAME = "Karol"
+BILLING_LAST_NAME = "Górecki"
+BILLING_COMPANY_NAME = "crewise"
+BILLING_STREET_ADDRESS = "Osiedle Chemików, 14"
+BILLING_APARTAMENT_ADRESS = "20"
+BILLING_ZIP_CODE = "32-566"
+BILLING_TOWN = "Alwernia"
+BILLING_PHONE = "781684830"
 
 
 def generate_login():
@@ -66,3 +74,25 @@ def test_log_in_failed():
     fill_in_login_form(driver, CORRECT_LOGIN, WRONG_PASSWORD)
     driver.find_element(By.NAME, "login").click()
     assert ": Incorrect username or password." in driver.find_element(By.XPATH, "//ul[@class='woocommerce-error']//li").text
+
+def test_address_setup():
+    driver = driver_setup(WEBSITE_LINK)
+    fill_in_login_form(driver, CORRECT_LOGIN, CORRECT_PASSWORD)
+    driver.find_element(By.NAME, "login").click()
+    time.sleep(1)
+    driver.find_element(By.LINK_TEXT, "Addresses").click()
+    time.sleep(2)
+    driver.find_element(By.LINK_TEXT, "Edit").click()
+    time.sleep(2)
+    driver.find_element(By.ID, "billing_first_name").send_keys(BILLING_NAME)
+    driver.find_element(By.ID, "billing_last_name").send_keys(BILLING_LAST_NAME)
+    driver.find_element(By.ID, "billing_company").send_keys(BILLING_COMPANY_NAME)
+    driver.find_element(By.ID, "billing_address_1").send_keys(BILLING_STREET_ADDRESS)
+    driver.find_element(By.ID, "billing_address_2").send_keys(BILLING_APARTAMENT_ADRESS)
+    driver.find_element(By.ID, "billing_postcode").send_keys(BILLING_ZIP_CODE)
+    driver.find_element(By.ID, "billing_city").send_keys(BILLING_TOWN)
+    driver.find_element(By.ID, "billing_phone").send_keys(BILLING_PHONE)
+    driver.find_element(By.NAME, "save_address").click()
+    time.sleep(3)
+    assert ("The following addresses will be used on the checkout page by default." is
+            driver.find_element(By.XPATH, "//div[@class='woocommerce-MyAccount-content']")).text
